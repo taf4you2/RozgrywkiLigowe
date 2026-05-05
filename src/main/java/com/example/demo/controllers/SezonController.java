@@ -21,4 +21,9 @@ public class SezonController {
     public Sezon dodajSezon(@RequestBody Sezon sezon) {
         return sezonRepo.save(sezon);
     }
+
+    @DeleteMapping("/{id}")
+    public void usunSezon(@PathVariable Integer id) {
+        sezonRepo.deleteById(id);
+    }
 }

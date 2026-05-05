@@ -1,23 +1,18 @@
 package com.example.demo.entities;
-
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
-
 @Entity
 @Getter
 @Setter
 public class Pilkarz {
-    
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     private String imie;
     private String nazwisko;
-
     @ManyToOne
     private Klub klub;
-
     public Integer getId() { return id; }
     public void setId(Integer id) { this.id = id; }
     public String getImie() { return imie; }

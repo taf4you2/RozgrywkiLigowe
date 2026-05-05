@@ -21,4 +21,9 @@ public class MeczController {
     public Mecz dodajMecz(@RequestBody Mecz mecz) {
         return meczRepo.save(mecz);
     }
+
+    @DeleteMapping("/{id}")
+    public void usunMecz(@PathVariable Integer id) {
+        meczRepo.deleteById(id);
+    }
 }

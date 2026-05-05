@@ -21,4 +21,9 @@ public class PilkarzController {
     public Pilkarz dodajPilkarza(@RequestBody Pilkarz pilkarz) {
         return pilkarzRepo.save(pilkarz);
     }
+
+    @DeleteMapping("/{id}")
+    public void usunPilkarza(@PathVariable Integer id) {
+        pilkarzRepo.deleteById(id);
+    }
 }

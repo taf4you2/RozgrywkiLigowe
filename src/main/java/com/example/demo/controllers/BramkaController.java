@@ -21,4 +21,9 @@ public class BramkaController {
     public Bramka dodajBramke(@RequestBody Bramka bramka) {
         return bramkaRepo.save(bramka);
     }
+
+    @DeleteMapping("/{id}")
+    public void usunBramke(@PathVariable Integer id) {
+        bramkaRepo.deleteById(id);
+    }
 }

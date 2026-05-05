@@ -1,49 +1,30 @@
 package com.example.demo.entities;
-
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Set;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.Setter;
-
 @Entity
 @Getter
 @Setter
 public class Mecz {
-    
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     private LocalDateTime dataRozpoczecia;
-
     @ManyToOne
     private Sezon sezon;
-
     @ManyToOne
     private Klub gospodarz;
-
     @ManyToOne
     private Klub gosc;
-
-    @ElementCollection
-    private List<Integer> skladGospodarzyWyjsciowy;
-    @ElementCollection
-    private List<Integer> skladGospodarzyLawkaRezerwowych;
-    @ElementCollection
-    private List<Integer> skladGosciWyjsciowy;
-    @ElementCollection
-    private List<Integer> skladGosciLawkaRezerwowych;
-
-    @ElementCollection
-    private List<String> kartki;
-    @ElementCollection
-    private List<String> faule;
-    @ElementCollection
-    private List<String> zmiany;
-
-    @JsonIgnore
-    @OneToMany(mappedBy = "mecz", cascade = CascadeType.ALL)
-    private Set<Bramka> bramki;
+    public Integer getId() { return id; }
+    public void setId(Integer id) { this.id = id; }
+    public LocalDateTime getDataRozpoczecia() { return dataRozpoczecia; }
+    public void setDataRozpoczecia(LocalDateTime dataRozpoczecia) { this.dataRozpoczecia = dataRozpoczecia; }
+    public Sezon getSezon() { return sezon; }
+    public void setSezon(Sezon sezon) { this.sezon = sezon; }
+    public Klub getGospodarz() { return gospodarz; }
+    public void setGospodarz(Klub gospodarz) { this.gospodarz = gospodarz; }
+    public Klub getGosc() { return gosc; }
+    public void setGosc(Klub gosc) { this.gosc = gosc; }
 }

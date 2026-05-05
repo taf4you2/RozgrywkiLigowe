@@ -21,4 +21,9 @@ public class KlubController {
     public Klub dodajKlub(@RequestBody Klub klub) {
         return klubRepo.save(klub);
     }
+
+    @DeleteMapping("/{id}")
+    public void usunKlub(@PathVariable Integer id) {
+        klubRepo.deleteById(id);
+    }
 }

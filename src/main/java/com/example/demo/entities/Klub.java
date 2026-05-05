@@ -12,7 +12,7 @@ import lombok.Setter;
 public class Klub {
     
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     private String nazwa;
 
