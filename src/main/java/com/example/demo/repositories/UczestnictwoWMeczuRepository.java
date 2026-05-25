@@ -5,4 +5,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface UczestnictwoWMeczuRepository extends CrudRepository<UczestnictwoWMeczu, Integer> {
+    boolean existsByMeczIdAndPilkarzId(Integer meczId, Integer pilkarzId);
 }

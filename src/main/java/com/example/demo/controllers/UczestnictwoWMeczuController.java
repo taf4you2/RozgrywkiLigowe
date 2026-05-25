@@ -18,6 +18,24 @@ public class UczestnictwoWMeczuController {
 
     @PostMapping
     public UczestnictwoWMeczu create(@RequestBody UczestnictwoWMeczu uczestnictwo) {
+        Integer wejscie = uczestnictwo.getMinutaWejscia();
+        Integer zejscie = uczestnictwo.getMinutaZejscia();
+        if (wejscie != null && zejscie != null) {
+            if (wejscie < 0 || zejscie > 120 || wejscie >= zejscie) {
+                throw new org.springframework.web.server.ResponseStatusException(
+                    org.springframework.http.HttpStatus.BAD_REQUEST, 
+                    "Niepoprawny czas wejścia lub zejścia (wymagane: 0 <= wejscie < zejscie <= 120)"
+                );
+            }
+        }
+        if (uczestnictwo.getMecz() != null && uczestnictwo.getPilkarz() != null) {
+            if (repository.existsByMeczIdAndPilkarzId(uczestnictwo.getMecz().getId(), uczestnictwo.getPilkarz().getId())) {
+                throw new org.springframework.web.server.ResponseStatusException(
+                    org.springframework.http.HttpStatus.BAD_REQUEST, 
+                    "Ten zawodnik jest już zarejestrowany w tym meczu"
+                );
+            }
+        }
         return repository.save(uczestnictwo);
     }
 

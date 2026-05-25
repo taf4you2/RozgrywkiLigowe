@@ -19,6 +19,13 @@ public class MeczController {
 
     @PostMapping
     public Mecz dodajMecz(@RequestBody Mecz mecz) {
+        if (mecz.getGospodarz() != null && mecz.getGosc() != null 
+            && mecz.getGospodarz().getId().equals(mecz.getGosc().getId())) {
+            throw new org.springframework.web.server.ResponseStatusException(
+                org.springframework.http.HttpStatus.BAD_REQUEST, 
+                "Gospodarz i gość nie mogą być tym samym klubem"
+            );
+        }
         return meczRepo.save(mecz);
     }
 
