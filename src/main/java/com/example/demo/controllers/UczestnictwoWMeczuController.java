@@ -2,10 +2,15 @@ package com.example.demo.controllers;
 
 import com.example.demo.entities.UczestnictwoWMeczu;
 import com.example.demo.repositories.UczestnictwoWMeczuRepository;
+import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.Link;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 import java.util.List;
+
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @RestController
 @RequestMapping("/uczestnictwo-wmeczu")
@@ -21,26 +26,46 @@ public class UczestnictwoWMeczuController {
         return (List<UczestnictwoWMeczu>) repository.findAll();
     }
 
+    @GetMapping("/{id}")
+    public EntityModel<UczestnictwoWMeczu> getOne(@PathVariable Integer id) {
+        UczestnictwoWMeczu uczestnictwo = repository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Nie znaleziono uczestnictwa"));
+        return dodajLinki(uczestnictwo);
+    }
+
     @PostMapping
-    public UczestnictwoWMeczu create(@RequestBody UczestnictwoWMeczu uczestnictwo) {
+    public EntityModel<UczestnictwoWMeczu> create(@RequestBody UczestnictwoWMeczu uczestnictwo) {
         sprawdzCzasGry(uczestnictwo);
         sprawdzDuplikat(uczestnictwo, null);
-        return repository.save(uczestnictwo);
+        return dodajLinki(repository.save(uczestnictwo));
     }
 
     @PutMapping("/{id}")
-    public UczestnictwoWMeczu update(@PathVariable Integer id, @RequestBody UczestnictwoWMeczu uczestnictwo) {
+    public EntityModel<UczestnictwoWMeczu> update(@PathVariable Integer id, @RequestBody UczestnictwoWMeczu uczestnictwo) {
         UczestnictwoWMeczu istniejace = repository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Nie znaleziono uczestnictwa"));
         sprawdzCzasGry(uczestnictwo);
         sprawdzDuplikat(uczestnictwo, id);
         przepiszUczestnictwo(istniejace, uczestnictwo);
-        return repository.save(istniejace);
+        return dodajLinki(repository.save(istniejace));
     }
 
     @DeleteMapping("/{id}")
     public void delete(@PathVariable Integer id) {
         repository.deleteById(id);
+    }
+
+    private EntityModel<UczestnictwoWMeczu> dodajLinki(UczestnictwoWMeczu uczestnictwo) {
+        EntityModel<UczestnictwoWMeczu> model = EntityModel.of(uczestnictwo);
+        model.add(linkTo(methodOn(UczestnictwoWMeczuController.class).getOne(uczestnictwo.getId())).withSelfRel());
+        model.add(linkTo(methodOn(UczestnictwoWMeczuController.class).getAll()).withRel("uczestnictwa"));
+        if (uczestnictwo.getMecz() != null && uczestnictwo.getMecz().getId() != null) {
+            model.add(Link.of("/mecz/" + uczestnictwo.getMecz().getId()).withRel("mecz"));
+        }
+        if (uczestnictwo.getPilkarz() != null && uczestnictwo.getPilkarz().getId() != null) {
+            model.add(Link.of("/pilkarz/" + uczestnictwo.getPilkarz().getId()).withRel("pilkarz"));
+        }
+        return model;
     }
 
     private void sprawdzCzasGry(UczestnictwoWMeczu uczestnictwo) {

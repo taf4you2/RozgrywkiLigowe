@@ -38,9 +38,9 @@ public class PilkarzController {
     }
 
     @PostMapping
-    public Pilkarz dodajPilkarza(@RequestBody Pilkarz pilkarz) {
+    public EntityModel<Pilkarz> dodajPilkarza(@RequestBody Pilkarz pilkarz) {
         sprawdzKlub(pilkarz);
-        return pilkarzRepo.save(pilkarz);
+        return dodajLinki(pilkarzRepo.save(pilkarz));
     }
 
     @PatchMapping("/{id}/transfer")
