@@ -132,13 +132,11 @@ public class ScenariuszeTest {
         nieistniejacyKlub.setId(9999);
         zlyPilkarz.setKlub(nieistniejacyKlub);
 
-        // This might return 500 DataIntegrityViolationException due to foreign key failure
-        Exception exception2 = assertThrows(Exception.class, () -> {
-            mockMvc.perform(post("/pilkarz")
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content(objectMapper.writeValueAsString(zlyPilkarz)));
-        });
-        assertTrue(exception2.getCause() instanceof org.springframework.dao.DataIntegrityViolationException);
+        // Invalid club should be rejected with a 400 Bad Request response.
+        mockMvc.perform(post("/pilkarz")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(zlyPilkarz)))
+                .andExpect(status().isBadRequest());
 
         // Ścieżka szczęśliwa - Usuwanie piłkarza
         mockMvc.perform(delete("/pilkarz/" + zapisanyPilkarz.getId()))
